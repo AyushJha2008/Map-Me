@@ -1,4 +1,12 @@
 import multer from "multer"
+import fs from "fs";
+import path from "path";
+
+// Ensure upload folder exists
+const uploadPath = path.resolve("./public/temp");
+if (!fs.existsSync(uploadPath)) {
+  fs.mkdirSync(uploadPath, { recursive: true });
+}
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {   //cb:callback
@@ -11,4 +19,16 @@ const storage = multer.diskStorage({
   }
 })
 
-export const upload = multer({ storage })
+// File filter (accept only images)
+const fileFilter = (req, file, cb) => {
+  const allowedTypes = ["image/jpeg", "image/png", "image/jpg", "image/webp"];
+  if (allowedTypes.includes(file.mimetype)) {
+    cb(null, true);
+  } else {
+    cb(new Error("Only .jpeg, .jpg, .png, .webp files are allowed!"), false);
+  }
+};
+
+
+export const upload = multer({ storage, fileFilter,
+   limits: { fileSize: 5 * 1024 * 1024 }, })

@@ -1,30 +1,40 @@
 import dotenv from "dotenv";
-// dotenv.config()
 import path from "path";
 import { fileURLToPath } from "url";
+import mongoose from "mongoose";
+import { app } from "./app.js";
+import { DB_NAME } from "./constants.js";
+
 // Fix __dirname for ES modules
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Load .env from root
+// Load environment variables
 dotenv.config({ path: path.resolve(__dirname, "../.env") });
-import mongoose from "mongoose"
-import { DB_NAME } from "./constants.js"
-import { app } from "./app.js"
 
-(async ()=>{
-    try{
-        await mongoose.connect(`${process.env.MONGODB_URL}/${DB_NAME}`);
-        console.log("db connected ");
-        app.on("error", (error)=>{
-            console.log("not able to talk with database", error);
-            throw error
-        })
-        app.listen(process.env.PORT || 8000, ()=>{
-            console.log("post is listening on", process.env.PORT);
-        });
-    }
-    catch(error){
-        console.log("error:", error);
-    }
+const PORT = process.env.PORT || 8000;
+const MONGO_URI = `${process.env.MONGODB_URL}/${DB_NAME}`;
+
+// Self-invoking async function
+(async () => {
+  try {
+    await mongoose.connect(MONGO_URI, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
+
+    console.log("✅ Database connected successfully");
+
+    app.on("error", (error) => {
+      console.error("❌ Express app error:", error);
+      throw error;
+    });
+
+    app.listen(PORT, () => {
+      console.log(`🚀 Server running on port ${PORT}`);
+    });
+  } catch (error) {
+    console.error("❌ Database connection failed:", error.message);
+    process.exit(1); // Exit if DB connection fails
+  }
 })();

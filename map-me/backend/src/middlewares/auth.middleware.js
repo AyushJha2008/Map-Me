@@ -7,7 +7,7 @@ export const verifyJwt = asyncHandler(async(req, _, next)=>{
     // res was unused in above method so i replaced it with underscore
     try {
         const token = req.cookies.accessToken || req.header
-        ("Authorization")?.replace("Bearer", "")
+        ("Authorization")?.replace("Bearer ", "")
     
         if(!token){
             throw new Apierr(401, "unauthorized request")

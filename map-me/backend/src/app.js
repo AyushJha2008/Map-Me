@@ -1,22 +1,31 @@
-import express from "express"
-import cors from "cors"
-import cookieParser from "cookie-parser"
+import express from "express";
+import cors from "cors";
+import cookieParser from "cookie-parser";
 
 const app = express();
+
+// ====== Middlewares ======
 app.use(cors({
-    origin:process.env.CORS_ORIGIN
-}))
+  origin: process.env.CORS_ORIGIN || "*", // fallback for dev
+  credentials: true, // allow cookies & auth headers
+}));
 
-app.use(cookieParser())
-app.use(express.json({limit: "16kb"}));
-app.use(express.urlencoded({extended: true, limit:"16kb"})) //object inside object;
-app.use(express.static('public'))  //user image data folder
+app.use(cookieParser());
+app.use(express.json({ limit: "16kb" }));
+app.use(express.urlencoded({ extended: true, limit: "16kb" }));
+app.use(express.static("public")); // for images (e.g., room photos)
 
-//routes import
-import userRouter from './routes/user.routes.js'
+// ====== Routes Imports ======
+import userRouter from "./routes/user.routes.js";
+import mapRouter from "./routes/map.routes.js";
 
-//routes declaration
-app.use("/api/v1/users", userRouter)  //its prefix
+// ====== Routes Declaration ======
+app.use("/api/v1/users", userRouter);   // Authentication
+app.use("/api/v1/maps", mapRouter);  // Maps, Floors, Rooms (coming soon)
 
+// Health check route
+app.get("/api/v1/health", (req, res) => {
+  res.json({ status: "ok", message: "Map Me backend is running 🚀" });
+});
 
-export{app}
+export { app };
