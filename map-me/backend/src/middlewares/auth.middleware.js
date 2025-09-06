@@ -1,5 +1,5 @@
 import { User } from "../models/user.model.js";
-import { Apierr } from "../utils/api-err.js";
+import { ApiError } from "../utils/api-err.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import jwt from "jsonwebtoken";
 
@@ -10,7 +10,7 @@ export const verifyJwt = asyncHandler(async(req, _, next)=>{
         ("Authorization")?.replace("Bearer ", "")
     
         if(!token){
-            throw new Apierr(401, "unauthorized request")
+            throw new ApiError(401, "unauthorized request")
         }
 
         const decodedToken = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET)
@@ -18,11 +18,11 @@ export const verifyJwt = asyncHandler(async(req, _, next)=>{
         .select("-password -refreshToken")
     
         if(!user){
-            throw new Apierr(401, "invalid access token");
+            throw new ApiError(401, "invalid access token");
         }
         req.user = user;
         next()
     } catch (error) {
-        throw new Apierr(401, error?.message || "invalid access token");
+        throw new ApiError(401, error?.message || "invalid access token");
     }
 })

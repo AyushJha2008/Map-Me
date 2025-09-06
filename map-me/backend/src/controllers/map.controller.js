@@ -1,4 +1,5 @@
 import { Map } from "../models/map.model.js";
+import { v4 as uuidv4 } from "uuid";
 
 // ====== Create a New Map ======
 export const createMap = async (req, res) => {
