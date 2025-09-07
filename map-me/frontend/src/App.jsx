@@ -1,34 +1,38 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+import React from 'react'
 import './App.css'
+import mapmeIcon from './assets/mapme-icon.png'
+import heroIcon from './assets/heroIcon.png'
 
-function App() {
-  const [count, setCount] = useState(0)
-
+const App = () => {
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    <div>
+      <header className='landingNavbar'>
+        <div className="head-left">
+          <img src={mapmeIcon} alt="" />
+          <span>Map Me</span>
+        </div>
+
+        <div className="head-right">
+          <a href="#">About</a>
+          <a href="#">Contact</a>
+          <a href="">Login</a>
+        </div>
+      </header>
+
+      <main>
+        <div className="main-left">
+          <h3>Navigate any Indoor Space with Ease</h3>
+          <p>Organize or Explore buildings effortlessly with Interactive Maps</p>
+
+          <button>I'm an Organizer</button>
+          <button>I'm a Visitor</button>
+        </div>
+
+        <div className="main-right">
+          <img src={heroIcon} alt="" />
+        </div>
+      </main>
+    </div>
   )
 }
 
