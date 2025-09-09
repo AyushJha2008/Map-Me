@@ -38,7 +38,7 @@
   align-items: center;
 }
 .main-left h1{
-  font-size: 3rem;
+  font-size: 3.5rem;
   margin-bottom: 1rem;
 }
 .main-left p{
@@ -52,7 +52,7 @@
   font-size: larger;
 }
 .main-right img{
-  height: 23rem;
+  height: 27rem;
 }
 #visitorLogin{
   background-color: rgb(94, 138, 234);

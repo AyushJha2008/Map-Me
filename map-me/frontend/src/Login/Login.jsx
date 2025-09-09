@@ -1,6 +1,7 @@
 import React from 'react'
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import './Login.css'
 
 const Login = () => {
 
@@ -38,14 +39,14 @@ const Login = () => {
     };
 
   return (
-    <div>
+    <div className='loginCont'>
         <div className='loginHead'>
-            <h2>{isLogin? "Organizer Login": "Organizer Signup"}Welcome to Map Me</h2>
+            <h2>{isLogin? "Organizer Login": "Organizer Signup"}</h2>
         </div>
 
-        <form onSubmit={handleSubmit}>
+        <form className='loginForm' onSubmit={handleSubmit}>
             <input type="text" 
-            placeholder='fullName' name='fullName' 
+            placeholder='FullName' name='fullName' 
             value={form.fullName} onChange={handleChange}
             required />
 
@@ -57,10 +58,10 @@ const Login = () => {
             name='password' value={form.password}
             onChange={handleChange} required />
 
-            <button type='submit'>{isLogin? "Login": "sign up"}</button>
+            <Link className='loginLink' to='/Dashboard'><button type='submit'>{isLogin? "Login": "sign up"}</button></Link>
         </form>
 
-        <p>{isLogin? "Dont have an account?": "Already have account?"}{""}
+        <p className='loginSwitch'>{isLogin? "Dont have an account?": "Already have account?"}
             <button onClick={()=> setIsLogin(!isLogin)}>{isLogin? "Sign up" : "Login"}</button>
         </p>
     </div>
