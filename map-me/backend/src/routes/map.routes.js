@@ -1,3 +1,4 @@
+// routes/map.routes.js
 import { Router } from "express";
 import {
   createMap,
@@ -22,11 +23,12 @@ router.get("/", verifyJwt, getMaps);
 // Get single map by ID
 router.get("/:id", verifyJwt, getMapById);
 
-// Update room info (name, photo, notes)
+// Update room info (name, photo, notes, and QR code)
+// The route path is corrected to include a 'sectionIndex'
 router.put(
-  "/:mapId/floors/:floorNumber/rooms/:roomIndex",
+  "/:mapId/floors/:floorNumber/sections/:sectionIndex/rooms/:roomIndex",
   verifyJwt,
-  upload.single("photo"), // 👈 allow photo upload
+  upload.single("photo"),
   updateRoom
 );
 

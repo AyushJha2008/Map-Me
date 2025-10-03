@@ -1,0 +1,52 @@
+/* frontend/src/Map/UpdateMap.css */
+
+.update-map-container {
+  max-width: 800px;
+  margin: 3rem auto;
+  padding: 2rem;
+  background-color: #fbfbf5;
+  box-shadow: 0px 0px 8px 0px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  text-align: center;
+}
+
+.update-map-container h2 {
+  font-size: xx-large;
+  margin-bottom: 1.5rem;
+  color: #333;
+}
+
+.maps-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+}
+
+.map-card {
+  width: 250px;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+  background-color: #fff;
+  text-align: left;
+}
+
+.map-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.map-card h3 {
+  font-size: x-large;
+  margin-bottom: 10px;
+  color: #447aee;
+}
+
+.map-card p {
+  color: #666;
+  font-size: large;
+}

@@ -10,7 +10,7 @@ import DeleteMap from "./Map/DeleteMap";
 import MapView from "./Map/MapView";
 import FloorView from "./Map/FloorView";
 import RoomView from "./Map/RoomView";
-
+import EditMap from "./Map/EditMap"
 
 const App = () => {
   return (
@@ -23,6 +23,7 @@ const App = () => {
         <Route path="/create-map" element={<CreateMap />} />
         <Route path="/update-map" element={<UpdateMap />} />
         <Route path="/delete-map" element={<DeleteMap />} />
+        <Route path='/edit-map/:id' element={<EditMap />} />
         <Route path="/map/:id" element={<MapView />} />
         <Route path="/map/:id/floor/:floorId" element={<FloorView />} />
         <Route path="/map/:id/room/:roomId" element={<RoomView />} />
