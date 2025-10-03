@@ -28,14 +28,14 @@ const userSchema = new Schema(
   { timestamps: true }
 );
 
-// ====== Password Hash Middleware ======
+// Password Hash Middleware
 userSchema.pre("save", async function (next) {
   if (!this.isModified("password")) return next();
   this.password = await bcrypt.hash(this.password, 10);
   next();
 });
 
-// ====== Methods ======
+// Methods
 userSchema.methods.isPasswordCorrect = async function (password) {
   return await bcrypt.compare(password, this.password);
 };

@@ -1,0 +1,68 @@
+.create-map {
+  padding: 20px;
+  font-family: Arial, sans-serif;
+}
+
+input {
+  padding: 8px;
+  margin-bottom: 10px;
+  display: block;
+}
+
+.add-btn {
+  margin: 5px 0;
+  padding: 6px 10px;
+  background: #3498db;
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.add-btn:hover {
+  background: #2980b9;
+}
+
+.floors-list, .sections-list, .rooms-list {
+  margin-top: 10px;
+  padding-left: 15px;
+}
+
+.floor-block {
+  margin-top: 15px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+}
+
+.section-block {
+  margin-top: 10px;
+  padding: 8px;
+  border: 1px dashed #aaa;
+  border-radius: 5px;
+}
+
+.room-box {
+  display: inline-block;
+  padding: 10px;
+  margin: 5px;
+  background: #1abc9c;
+  color: white;
+  border-radius: 5px;
+  min-width: 60px;
+  text-align: center;
+}
+
+.submit-btn {
+  margin-top: 20px;
+  padding: 10px 15px;
+  background: #2ecc71;
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.submit-btn:hover {
+  background: #27ae60;
+}

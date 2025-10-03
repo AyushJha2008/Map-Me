@@ -20,7 +20,7 @@ const generateTokens = (userId) => {
   return { accessToken, refreshToken };
 };
 
-// ====== Register Organizer ======
+// Register Organizer
 export const registerUser = async (req, res) => {
   try {
     const { fullName, email, password } = req.body;
@@ -90,7 +90,7 @@ export const loginUser = async (req, res) => {
   }
 };
 
-// ====== Logout Organizer ======
+// Logout Organizer 
 export const logoutUser = async (req, res) => {
   try {
     const user = await User.findById(req.user._id);
@@ -110,7 +110,7 @@ export const logoutUser = async (req, res) => {
   }
 };
 
-// ====== Refresh Token ======
+// Refresh Token
 export const refreshAccessToken = async (req, res) => {
   try {
     const refreshToken =

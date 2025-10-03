@@ -5,8 +5,10 @@ import deleteIcon from '../assets/delete-icon.png'
 import updateIcon from '../assets/update-icon.png'
 import createIcon from '../assets/create-icon.png'
 import './Dashboard.css'
+import { useNavigate } from "react-router-dom";
 
 const Dashboard = () => {
+    const navigate = useNavigate();
   return (
     <div className='dashboard-cont'>
         <header>
@@ -16,15 +18,15 @@ const Dashboard = () => {
         </header>
 
         <main>
-            <div className="toolsDash">
+            <div className="toolsDash" onClick={()=> navigate('/create-map')}>
                 <img src={createIcon}/>
                 <p>Create Map</p>
             </div>
-            <div className="toolsDash">
+            <div className="toolsDash" onClick={() => navigate("/update-map")}>
                 <img src={updateIcon}/>
                 <p>Update Map</p>
             </div>
-            <div className="toolsDash">
+            <div className="toolsDash" onClick={() => navigate("/delete-map")}>
                 <img src={deleteIcon} />
                 <p>Delete Map</p>
             </div>
