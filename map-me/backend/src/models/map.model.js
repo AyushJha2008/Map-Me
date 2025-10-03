@@ -3,32 +3,32 @@ import mongoose, { Schema } from "mongoose";
 // ====== Room Schema ======
 const roomSchema = new Schema(
   {
-    name: { type: String, required: true },   // "Lab 101"
-    photo: { type: String },                  // image URL
-    notes: { type: String },                  // notes or events
-    qrCode: { type: String },                 // QR link/image
+    name: { type: String, required: true },
+    photo: { type: String },
+    notes: { type: String },
+    qrCode: { type: String },
   },
   { timestamps: true }
 );
 
 // ====== Section Schema ======
 const sectionSchema = new Schema({
-  sectionNumber: { type: Number, required: true }, // e.g. 1, 2, 3
+  sectionNumber: { type: Number, required: true },
   rooms: [roomSchema],
 });
 
 // ====== Floor Schema ======
 const floorSchema = new Schema({
-  floorNumber: { type: Number, required: true }, // e.g. 1, 2, 3
-  sections: [sectionSchema],                     // sections inside floor
+  floorNumber: { type: Number, required: true },
+  sections: [sectionSchema], // Now floors contain sections
 });
 
 // ====== Map Schema ======
 const mapSchema = new Schema(
   {
-    title: { type: String, required: true },      
+    title: { type: String, required: true },
     createdBy: { type: Schema.Types.ObjectId, ref: "User", required: true },
-    floors: [floorSchema],
+    floors: [floorSchema], // floors + sections + rooms
   },
   { timestamps: true }
 );

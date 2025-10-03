@@ -6,7 +6,7 @@ const app = express();
 
 // ====== Middlewares ======
 app.use(cors({
-  origin: process.env.CORS_ORIGIN || "*", // fallback for dev
+  origin: process.env.CORS_ORIGIN || "http://localhost:5173", // fallback for dev
   credentials: true, // allow cookies & auth headers
 }));
 

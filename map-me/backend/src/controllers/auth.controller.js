@@ -45,9 +45,13 @@ export const registerUser = async (req, res) => {
       data: { id: user._id, fullName: user.fullName, email: user.email },
     });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    console.error("Unhandled Error:", error);
+    res.status(500).json({ success: false, message: "Internal Server Error" });
   }
+    // Generic error handling for other cases
+    res.status(500).json({ success: false, message: "An unexpected error occurred: " + error.message });
 };
+
 
 // ====== Login Organizer ======
 export const loginUser = async (req, res) => {

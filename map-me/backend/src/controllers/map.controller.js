@@ -4,19 +4,24 @@ import { v4 as uuidv4 } from "uuid";
 // ====== Create a New Map ======
 export const createMap = async (req, res) => {
   try {
-    const { title, numberOfFloors, roomsPerFloor } = req.body;
-    const userId = req.user._id; // from auth middleware
+    const { title, floors } = req.body; // Expecting the full map object from frontend
+    const userId = req.user._id;
 
-    // Generate floors and empty rooms
-    const floors = Array.from({ length: numberOfFloors }, (_, i) => ({
-      floorNumber: i + 1,
-      rooms: Array.from({ length: roomsPerFloor }, () => ({
-        name: "Untitled Room",
-        photo: "",
-        notes: "",
-        qrCode: uuidv4(),
-      })),
-    }));
+    if (!title || !floors) {
+      return res.status(400).json({
+        success: false,
+        message: "Title and floors are required",
+      });
+    }
+
+    // Assign QR codes to rooms
+    floors.forEach((floor) => {
+      floor.sections.forEach((section) => {
+        section.rooms.forEach((room) => {
+          room.qrCode = uuidv4();
+        });
+      });
+    });
 
     const newMap = await Map.create({
       title,
@@ -33,6 +38,7 @@ export const createMap = async (req, res) => {
     res.status(500).json({ success: false, message: error.message });
   }
 };
+
 
 // ====== Get All Maps of an Organizer ======
 export const getMaps = async (req, res) => {
