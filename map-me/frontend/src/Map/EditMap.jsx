@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import './EditMap.css'; 
+import './EditMap.css';
 
 const EditMap = () => {
   const { id } = useParams();
@@ -40,52 +40,72 @@ const EditMap = () => {
     fetchMap();
   }, [id, navigate]);
 
-  // frontend/src/Map/EditMap.jsx
-
-const handleRoomUpdate = async (floorIndex, sectionIndex, roomIndex, newRoomData) => {
-  try {
-    const token = localStorage.getItem("accessToken");
-    const formData = new FormData();
-    formData.append('name', newRoomData.name);
-    formData.append('notes', newRoomData.notes);
-    
-    // If a new photo is uploaded, append it to the form data
-    if (newRoomData.photo) {
-      formData.append('photo', newRoomData.photo);
-    }
-
-    // The URL is corrected to include the 'sections' parameter
-    const response = await axios.put(
-      `http://localhost:8000/api/v1/maps/${map._id}/floors/${floorIndex + 1}/sections/${sectionIndex}/rooms/${roomIndex}`,
-      formData,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "multipart/form-data",
-        },
-        withCredentials: true,
+  const handleRoomUpdate = async (floorIndex, sectionIndex, roomIndex, newRoomData) => {
+    try {
+      const token = localStorage.getItem("accessToken");
+      const formData = new FormData();
+      formData.append('name', newRoomData.name);
+      formData.append('notes', newRoomData.notes);
+      
+      if (newRoomData.photo) {
+        formData.append('photo', newRoomData.photo);
       }
-    );
 
-    if (response.data.success) {
-      alert("Room updated successfully!");
-      // Update the state to reflect the new data
-      setMap((prevMap) => {
-        const updatedFloors = [...prevMap.floors];
-        updatedFloors[floorIndex].sections[sectionIndex].rooms[roomIndex] = response.data.data;
-        return { ...prevMap, floors: updatedFloors };
-      });
-    } else {
-      alert(response.data.message);
+      const response = await axios.put(
+        `http://localhost:8000/api/v1/maps/${map._id}/floors/${floorIndex + 1}/sections/${sectionIndex}/rooms/${roomIndex}`,
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "multipart/form-data",
+          },
+          withCredentials: true,
+        }
+      );
+
+      if (response.data.success) {
+        alert("Room updated successfully!");
+        setMap((prevMap) => {
+          const updatedFloors = [...prevMap.floors];
+          updatedFloors[floorIndex].sections[sectionIndex].rooms[roomIndex] = response.data.data;
+          return { ...prevMap, floors: updatedFloors };
+        });
+      } else {
+        alert(response.data.message);
+      }
+    } catch (err) {
+      alert("Error updating room.");
+      console.error("Update room error:", err);
     }
-  } catch (err) {
-    alert("Error updating room.");
-    console.error("Update room error:", err);
-  }
-};
+  };
   
-  const regenerateQrCode = (floorIndex, sectionIndex, roomIndex) => {
-    alert("Functionality to regenerate QR code is not yet implemented on the backend.");
+  const regenerateQrCode = async (floorIndex, sectionIndex, roomIndex) => {
+    try {
+      const token = localStorage.getItem("accessToken");
+      const response = await axios.put(
+        `http://localhost:8000/api/v1/maps/${map._id}/floors/${floorIndex + 1}/sections/${sectionIndex}/rooms/${roomIndex}`,
+        { regenerateQr: true },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          withCredentials: true,
+        }
+      );
+      if (response.data.success) {
+        alert("QR code regenerated successfully!");
+        setMap((prevMap) => {
+          const updatedFloors = [...prevMap.floors];
+          updatedFloors[floorIndex].sections[sectionIndex].rooms[roomIndex] = response.data.data;
+          return { ...prevMap, floors: updatedFloors };
+        });
+      } else {
+        alert(response.data.message);
+      }
+    } catch (err) {
+      alert("Error regenerating QR code.");
+      console.error("Regenerate QR error:", err);
+    }
   };
 
   if (loading) return <div className="loading">Loading map...</div>;
@@ -146,6 +166,14 @@ const RoomEditor = ({ room, onUpdate, onRegenerateQr }) => {
         )}
         <input type="file" onChange={(e) => setPhoto(e.target.files[0])} />
       </div>
+
+      <div className="form-group">
+        <label>QR Code:</label>
+        <div className="qr-code-display">
+            <p>{room.qrCode}</p>
+        </div>
+      </div>
+
       <div className="room-actions">
         <button type="submit" className="update-btn">Update</button>
         <button type="button" className="regenerate-btn" onClick={onRegenerateQr}>Regenerate QR</button>

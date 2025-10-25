@@ -16,7 +16,6 @@ const router = Router();
 
 // Create new map
 router.post("/", verifyJwt, createMap);
-
 // Get all maps of logged-in organizer
 router.get("/", verifyJwt, getMaps);
 
