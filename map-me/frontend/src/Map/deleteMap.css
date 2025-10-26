@@ -1,0 +1,72 @@
+/* frontend/src/Map/DeleteMap.css */
+
+.delete-map-container {
+    max-width: 800px;
+    margin: 3rem auto;
+    padding: 2rem;
+    background-color: #fbfbf5;
+    box-shadow: 0px 0px 8px 0px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    text-align: center;
+}
+
+.delete-map-container h2 {
+    font-size: xx-large;
+    margin-bottom: 1.5rem;
+    color: #333;
+}
+
+.maps-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+}
+
+.map-card {
+    width: 250px;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.map-details {
+    text-align: left;
+}
+
+.map-details h3 {
+    font-size: x-large;
+    margin-bottom: 5px;
+    color: #447aee;
+}
+
+.map-details p {
+    color: #666;
+    font-size: large;
+}
+
+.delete-btn {
+    background-color: #e74c3c;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.delete-btn:hover {
+    background-color: #c0392b;
+}
+
+.loading {
+    text-align: center;
+    font-size: x-large;
+    margin-top: 3rem;
+    color: #3498db;
+}

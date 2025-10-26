@@ -1,4 +1,3 @@
-// routes/map.routes.js
 import { Router } from "express";
 import {
   createMap,
@@ -12,15 +11,18 @@ import { upload } from "../middlewares/multer.middleware.js";
 
 const router = Router();
 
-// ====== Map Routes ======
+//--- Map Routes ----
 
 // Create new map
 router.post("/", verifyJwt, createMap);
 // Get all maps of logged-in organizer
 router.get("/", verifyJwt, getMaps);
 
-// Get single map by ID
+// Get single map by ID (SECURED: for organizers)
 router.get("/:id", verifyJwt, getMapById);
+
+// Get single map by ID (PUBLIC: for visitors)
+router.get("/visitor/:id", getMapById);
 
 // Update room info (name, photo, notes, and QR code)
 // The route path is corrected to include a 'sectionIndex'

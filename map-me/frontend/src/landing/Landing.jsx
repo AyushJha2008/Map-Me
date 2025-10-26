@@ -27,7 +27,7 @@ const Landing = () => {
           <p>Organize Events without worrying about visitor navigation, map-me let your visitors Explore buildings effortlessly with Interactive Maps</p>
 
           <Link to='/login'><button id='organizerLogin'>I'm an Organizer</button></Link>
-          <button id='visitorLogin'>I'm a Visitor</button>
+          <Link to='/map/visitor/:id'><button id='visitorLogin'>I'm a Visitor</button></Link>
         </div>
 
         <div className="main-right">
