@@ -45,6 +45,8 @@ import UpdateMap from './Map/UpdateMap';
 import DeleteMap from './Map/DeleteMap';
 import EditMap from './Map/EditMap'; 
 import MapView from './Map/MapView'; // Assuming you put the component here
+import VisitorMapEntry from './Map/VisitorMapEntry'
+
 
 // === New Protected Route Component ===
 const ProtectedRoute = ({ element: Component }) => {
@@ -65,6 +67,11 @@ const App = () => {
       <Routes>
         <Route path='/' element={<Landing />} />
         <Route path='/login' element={<Login />} />
+
+        {/* new visitor entry route */}
+        <Route path='/visitor' element={<VisitorMapEntry />} />
+
+        <Route path='/map/visitor/view/:qrValue' element={<MapView />} />
         
         {/* Protected Routes: Check if user is logged in before rendering */}
         <Route path='/dashboard' element={<ProtectedRoute element={<Dashboard />} />} />

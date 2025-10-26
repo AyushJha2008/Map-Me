@@ -126,3 +126,24 @@
 .loading {
     color: #3498db;
 }
+
+/* frontend/src/Map/MapView.css (Additions) */
+
+.current-location-banner {
+    background-color: #fcf8e3;
+    border: 1px solid #faebcc;
+    color: #8a6d3b;
+    padding: 15px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+    font-size: large;
+    font-weight: bold;
+    text-align: center;
+}
+
+.room-highlight {
+    /* Style for the room that matches the scanned QR code */
+    background-color: #e74c3c !important; /* Stand-out color for current location */
+    border: 3px solid #c0392b;
+    transform: scale(1.05);
+}

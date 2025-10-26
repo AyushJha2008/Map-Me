@@ -4,17 +4,25 @@ import axios from 'axios';
 import './mapView.css'; // Create this CSS file
 
 const MapView = () => {
-    const { id } = useParams();
+    const { mapId, qrValue } = useParams();
     const [map, setMap] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [selectedRoom, setSelectedRoom] = useState(null);
 
+    const mapToFetchId = mapId || qrValue;
+    const highlightQrCode = qrValue;
+
     useEffect(() => {
         const fetchMap = async () => {
+            if (!mapToFetchId) {
+                setError("Invalid Map or QR Code provided.");
+                setLoading(false);
+                return;
+            }
             try {
                 // Use the new public endpoint
-                const response = await axios.get(`http://localhost:8000/api/v1/maps/visitor/${id}`);
+                const response = await axios.get(`http://localhost:8000/api/v1/maps/visitor/${mapToFetchId}`);
 
                 if (response.data.success) {
                     setMap(response.data.data);
@@ -29,7 +37,7 @@ const MapView = () => {
             }
         };
         fetchMap();
-    }, [id]);
+    }, [mapToFetchId]);
 
     if (loading) return <div className="loading">Loading Map...</div>;
     if (error) return <div className="error">{error}</div>;
@@ -38,6 +46,18 @@ const MapView = () => {
     return (
         <div className="visitor-map-container">
             <h2>Welcome to: {map.title}</h2>
+            
+            {/* Display current location message if a QR code was provided */}
+            {highlightQrCode && (
+                <div className="current-location-banner">
+                    Current Location: **{
+                        // Find the room that matches the highlightQrCode
+                        map.floors.flatMap(f => f.sections.flatMap(s => s.rooms))
+                            .find(r => r.qrCode === highlightQrCode)?.name || 'Unknown Room'
+                    }**
+                </div>
+            )}
+
             {map.floors.map((floor, fIndex) => (
                 <div key={fIndex} className="floor-display-block">
                     <h3>Floor {floor.floorNumber}</h3>
@@ -48,7 +68,7 @@ const MapView = () => {
                                 {section.rooms.map((room, rIndex) => (
                                     <div
                                         key={rIndex}
-                                        className="room-box-clickable"
+                                        className={`room-box-clickable ${room.qrCode === highlightQrCode ? 'room-highlight' : ''}`}
                                         onClick={() => setSelectedRoom(room)}
                                     >
                                         {room.name}

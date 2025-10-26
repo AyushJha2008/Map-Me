@@ -1,0 +1,61 @@
+/* frontend/src/Map/VisitorMapEntry.css */
+
+.visitor-entry-container {
+    max-width: 500px;
+    margin: 6rem auto;
+    padding: 2rem;
+    background-color: #ffffff;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    text-align: center;
+    font-family: 'Calibri', sans-serif;
+}
+
+.visitor-entry-container h2 {
+    color: #2e66f2;
+    margin-bottom: 1rem;
+    font-size: xx-large;
+}
+
+.visitor-entry-container p {
+    color: #666;
+    margin-bottom: 1.5rem;
+}
+
+.note {
+    font-size: small;
+    color: #999;
+    margin-top: 20px;
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    align-items: center;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #ccc;
+    border-radius: 6px;
+    font-size: 1rem;
+}
+
+.scan-btn {
+    background-color: #1abc9c;
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: large;
+    transition: background-color 0.3s;
+    width: 100%;
+    font-weight: bold;
+}
+
+.scan-btn:hover {
+    background-color: #16a085;
+}
