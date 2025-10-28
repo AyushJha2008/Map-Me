@@ -132,3 +132,41 @@
 .loading {
     color: #3498db;
 }
+/* frontend/src/Map/EditMap.css (Additions) */
+
+.main-save-button-container {
+    text-align: center;
+    margin: 2rem 0;
+}
+
+.submit-btn {
+    background-color: #2ecc71;
+    color: white;
+    border: none;
+    padding: 12px 30px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: large;
+    font-weight: bold;
+    transition: background-color 0.3s, transform 0.2s;
+    /* Ensure it stands out as the primary action */
+    box-shadow: 0 4px 6px rgba(46, 204, 113, 0.4); 
+}
+
+.submit-btn:hover {
+    background-color: #27ae60;
+    transform: translateY(-2px);
+}
+
+.pending-message {
+    font-size: 0.85rem;
+    color: #999;
+    /* Optional: style for clarity */
+    margin-top: 5px;
+}
+
+.pending-tag {
+    color: #e74c3c; /* Red color for pending action */
+    font-weight: bold;
+    margin-left: 10px;
+}

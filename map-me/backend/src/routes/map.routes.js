@@ -24,6 +24,9 @@ router.get("/:id", verifyJwt, getMapById);
 // Get single map by ID (PUBLIC: for visitors)
 router.get("/visitor/:id", getMapById);
 
+// Search map by QR code (PUBLIC - for Visitors)
+router.get("/qr-search/:qrCode", getMapByQrCode);
+
 // Update room info (name, photo, notes, and QR code)
 // The route path is corrected to include a 'sectionIndex'
 router.put(

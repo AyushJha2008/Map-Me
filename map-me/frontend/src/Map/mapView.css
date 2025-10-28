@@ -42,12 +42,19 @@
 
 .rooms-container {
     display: flex;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     gap: 10px;
     margin-top: 10px;
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+}
+
+.rooms-container::-webkit-scrollbar {
+    display: none;
 }
 
 .room-box-clickable {
+    flex-shrink: 0;
     padding: 10px 15px;
     background-color: #5d9cec; /* Accent color */
     color: white;

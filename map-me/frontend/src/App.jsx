@@ -71,6 +71,8 @@ const App = () => {
         {/* new visitor entry route */}
         <Route path='/visitor' element={<VisitorMapEntry />} />
 
+        <Route path='/map/visitor/view/:mapId/:qrValue?' element={<MapView />} />
+
         <Route path='/map/visitor/view/:qrValue' element={<MapView />} />
         
         {/* Protected Routes: Check if user is logged in before rendering */}

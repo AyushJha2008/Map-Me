@@ -10,7 +10,7 @@ const MapView = () => {
     const [error, setError] = useState(null);
     const [selectedRoom, setSelectedRoom] = useState(null);
 
-    const mapToFetchId = mapId || qrValue;
+    const mapToFetchId = mapId;
     const highlightQrCode = qrValue;
 
     useEffect(() => {

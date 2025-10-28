@@ -39,6 +39,56 @@ export const createMap = async (req, res) => {
   }
 };
 
+// ====== Get Map by QR Code (Public) ======
+export const getMapByQrCode = async (req, res) => {
+  try {
+    const { qrCode } = req.params;
+
+    if (!qrCode) {
+      return res.status(400).json({ success: false, message: "QR code is required" });
+    }
+
+    // Use MongoDB aggregation to find the map containing the room with this QR code
+    const map = await Map.aggregate([
+      { $unwind: "$floors" },
+      { $unwind: "$floors.sections" },
+      { $unwind: "$floors.sections.rooms" },
+      { $match: { "floors.sections.rooms.qrCode": qrCode } },
+      {
+        $project: {
+          _id: 1,
+          title: 1,
+          createdBy: 1,
+          floors: "$floors",
+          matchedRoom: "$floors.sections.rooms",
+        }
+      },
+      // Group back by map ID to return the full map (optional, but cleaner for frontend)
+      // Since we only need the basic info, we can just return the first match.
+    ]);
+
+    if (map.length === 0) {
+      return res.status(404).json({ success: false, message: "Room not found for this QR code" });
+    }
+    
+    // For simplicity, we just return the full map object of the first match
+    // To get the full map back, we'd need a second lookup, but for now, we return the map ID and QR code to let the frontend handle the rest.
+    
+    // We get the map ID and the QR code which the frontend will use to fetch the map and highlight the room.
+    const mapId = map[0]._id;
+
+    res.json({ 
+        success: true, 
+        mapId: mapId,
+        qrCode: qrCode,
+        message: "Room found successfully, proceeding to map view."
+    });
+
+  } catch (error) {
+    res.status(500).json({ success: false, message: "Internal server error during QR search." });
+  }
+};
+
 // ====== Get All Maps of an Organizer ======
 export const getMaps = async (req, res) => {
   try {
