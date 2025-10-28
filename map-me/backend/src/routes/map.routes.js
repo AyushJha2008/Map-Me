@@ -5,6 +5,7 @@ import {
   getMapById,
   updateRoom,
   deleteMap,
+  getMapByQrCode
 } from "../controllers/map.controller.js";
 import { verifyJwt } from "../middlewares/auth.middleware.js";
 import { upload } from "../middlewares/multer.middleware.js";
