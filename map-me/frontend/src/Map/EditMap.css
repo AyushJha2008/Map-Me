@@ -1,4 +1,3 @@
-/* frontend/src/Map/EditMap.css */
 
 .edit-map-container {
     max-width: 900px;
@@ -169,4 +168,55 @@
     color: #e74c3c; /* Red color for pending action */
     font-weight: bold;
     margin-left: 10px;
+}
+
+/* frontend/src/Map/EditMap.css (Additions) */
+.floor-features-editor {
+    border: 1px solid #447aee;
+    padding: 15px;
+    margin-top: 15px;
+    border-radius: 8px;
+    background-color: #eef4ff;
+}
+
+.floor-features-editor h4 {
+    color: #2e66f2;
+    margin-bottom: 10px;
+    border-bottom: 1px dashed #a3c1ff;
+    padding-bottom: 5px;
+}
+
+.feature-input-group {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 8px;
+    align-items: center;
+}
+
+.feature-input-group select,
+.feature-input-group input {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    flex-grow: 1;
+}
+
+.remove-btn {
+    background-color: #e74c3c;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9rem;
+}
+
+.save-features-btn {
+    background-color: #1abc9c;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    margin-top: 10px;
+    border-radius: 5px;
+    cursor: pointer;
 }

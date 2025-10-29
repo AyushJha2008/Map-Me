@@ -18,7 +18,7 @@
 
 .floor-display-block {
     margin-bottom: 1.5rem;
-    padding: 1rem;
+    padding: 1rem 0;
     border: 1px solid #ddd;
     border-radius: 6px;
     background-color: #fff;
@@ -28,33 +28,50 @@
     color: #333;
     margin-bottom: 0.8rem;
     border-bottom: 1px dashed #ccc;
-    padding-bottom: 0.5rem;
+    padding: 0 10px 0.5rem;
 }
 
-.section-display-block {
-    margin-top: 1rem;
+.floor-sections-scroll-wrapper {
+    overflow-x: auto; /* CRITICAL: Enables horizontal scrolling */
+    padding-bottom: 15px; /* Adds space for the scrollbar */
+    /* Optional: Hide scrollbar styling */
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+.floor-sections-scroll-wrapper::-webkit-scrollbar {
+    display: none;
 }
 
-.section-display-block h4 {
+.section-display-block-scrollable {
+    width: max-content;
+    min-width: 100%;
+    margin-bottom: 1rem;
+    padding: 0 10px;
+}
+
+.section-display-block-scrollable h4 {
     color: #555;
     margin-bottom: 0.5rem;
 }
 
-.rooms-container {
+.rooms-container-scrollable {
     display: flex;
     flex-wrap: nowrap;
+    overflow-x: auto;
     gap: 10px;
     margin-top: 10px;
+    padding-bottom: 10px;
     -ms-overflow-style: none;  /* IE and Edge */
     scrollbar-width: none;  /* Firefox */
 }
 
-.rooms-container::-webkit-scrollbar {
+.rooms-container-scrollable::-webkit-scrollbar {
     display: none;
 }
 
 .room-box-clickable {
     flex-shrink: 0;
+    min-width: 140px;
     padding: 10px 15px;
     background-color: #5d9cec; /* Accent color */
     color: white;
@@ -62,6 +79,7 @@
     cursor: pointer;
     font-weight: bold;
     transition: background-color 0.2s, transform 0.1s;
+    text-align: center;
 }
 
 .room-box-clickable:hover {

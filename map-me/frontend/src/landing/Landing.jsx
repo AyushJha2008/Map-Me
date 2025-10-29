@@ -2,14 +2,15 @@ import React from 'react'
 import './Landing.css'
 import mapmeIcon from '../assets/mapme-icon.png'
 import heroIcon from '../assets/heroIcon.png'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom' // 💡 Import useNavigate
 import Login from '../Login/Login'
-// import { useNavigate, navigate } from 'react-router-dom'
 
 const Landing = () => {
+  // 💡 Initialize the hook to get the navigate function
+  const navigate = useNavigate(); 
 
   const handleVisitorClick = () => {
-    // Navigate to the new map entry page
+    // This will now correctly navigate to the /visitor route
     navigate(`/visitor`);
   };
 
@@ -24,7 +25,7 @@ const Landing = () => {
         <div className="head-right">
           <a href="#">About</a>
           <a href="#">Contact</a>
-          <a href="">Login</a>
+          <a href="/login">Login</a> {/* Changed href to /login */}
         </div>
       </header>
 
@@ -34,7 +35,7 @@ const Landing = () => {
           <p>Organize Events without worrying about visitor navigation, map-me let your visitors Explore buildings effortlessly with Interactive Maps</p>
 
           <Link to='/login'><button id='organizerLogin'>I'm an Organizer</button></Link>
-          <button id='visitorLogin' onClick={handleVisitorClick}>I'm a Visitor</button> {/* This button now directs to /visitor */}
+          <button id='visitorLogin' onClick={handleVisitorClick}>I'm a Visitor</button>
         </div>
 
         <div className="main-right">

@@ -150,6 +150,79 @@ const EditMap = () => {
      alert(`QR code for Room ${rIndex + 1} marked for regeneration upon saving.`);
   };
 
+  const FloorFeaturesEditor = ({ mapId, floorNumber, initialFeatures }) => {
+    const [features, setFeatures] = useState(initialFeatures || []);
+    const [loading, setLoading] = useState(false);
+    
+    const featureOptions = ['Stairs', 'Lift', 'Entrance', 'Exit', 'Restroom'];
+
+    const addFeature = () => {
+        setFeatures(prev => [
+            ...prev,
+            { type: 'Stairs', label: `New ${prev.length + 1}` } // Add new feature
+        ]);
+    };
+
+    const handleFeatureChange = (index, field, value) => {
+        setFeatures(prev => {
+            const newFeatures = [...prev];
+            newFeatures[index][field] = value;
+            return newFeatures;
+        });
+    };
+
+    const removeFeature = (index) => {
+        setFeatures(prev => prev.filter((_, i) => i !== index));
+    };
+
+    const handleSaveFeatures = async () => {
+        setLoading(true);
+        const token = localStorage.getItem("accessToken");
+        try {
+            await axios.put(
+                `http://localhost:8000/api/v1/maps/${mapId}/floors/${floorNumber}/features`,
+                { features },
+                { headers: { Authorization: `Bearer ${token}` }, withCredentials: true }
+            );
+            alert(`Floor ${floorNumber} features saved!`);
+        } catch (error) {
+            alert("Failed to save features.");
+            console.error("Feature save error:", error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    return (
+        <div className="floor-features-editor">
+            <h4>Map Features (Stairs, Lifts, Gates)</h4>
+            {features.map((feature, index) => (
+                <div key={index} className="feature-input-group">
+                    <select
+                        value={feature.type}
+                        onChange={(e) => handleFeatureChange(index, 'type', e.target.value)}
+                    >
+                        {featureOptions.map(opt => <option key={opt} value={opt}>{opt}</option>)}
+                    </select>
+                    <input
+                        type="text"
+                        placeholder="Label (e.g., Main Lift)"
+                        value={feature.label}
+                        onChange={(e) => handleFeatureChange(index, 'label', e.target.value)}
+                    />
+                    <button onClick={() => removeFeature(index)} className="remove-btn" type="button">Remove</button>
+                </div>
+            ))}
+            <button onClick={addFeature} className="add-btn" type="button">+ Add Feature Point</button>
+            <button onClick={handleSaveFeatures} className="save-features-btn" type="button" disabled={loading}>
+                {loading ? 'Saving...' : 'Save Features'}
+            </button>
+        </div>
+    );
+ };
+
+  
+
 
   if (loading) return <div className="loading">Loading map...</div>;
   if (error) return <div className="error">{error}</div>;
@@ -164,14 +237,19 @@ const EditMap = () => {
         <button 
             onClick={handleSaveAllChanges} 
             className="submit-btn"
-        >
-            Save All Changes
-        </button>
+        > Save All Changes </button>
       </div>
       
       {map.floors.map((floor, fIndex) => (
         <div key={fIndex} className="floor-block">
           <h3>Floor {floor.floorNumber}</h3>
+
+          <FloorFeaturesEditor 
+              mapId={map._id}
+              floorNumber={floor.floorNumber}
+              initialFeatures={floor.featurePoints}
+          />
+          
           {floor.sections.map((section, sIndex) => (
             <div key={sIndex} className="section-block">
               <h4>Section {section.sectionNumber}</h4>

@@ -28,6 +28,12 @@ router.get("/visitor/:id", getMapById);
 // Search map by QR code (PUBLIC - for Visitors)
 router.get("/qr-search/:qrCode", getMapByQrCode);
 
+router.put(
+  "/:mapId/floors/:floorNumber/features",
+  verifyJwt,
+  updateFloorFeatures // This function will be defined in the controller
+);
+
 // Update room info (name, photo, notes, and QR code)
 // The route path is corrected to include a 'sectionIndex'
 router.put(

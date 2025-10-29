@@ -13,6 +13,9 @@ const MapView = () => {
     const mapToFetchId = mapId;
     const highlightQrCode = qrValue;
 
+    const startRoom = map.floors.flatMap(f => f.sections.flatMap(s => s.rooms))
+        .find(r => r.qrCode === highlightQrCode) || null;
+
     useEffect(() => {
         const fetchMap = async () => {
             if (!mapToFetchId) {
@@ -39,6 +42,67 @@ const MapView = () => {
         fetchMap();
     }, [mapToFetchId]);
 
+    const RoomView = ({ room, onClose, startRoom }) => { // 💡 Receive startRoom prop
+
+    const handleGoHere = () => {
+        if (!startRoom) {
+            alert("Error: Cannot set route. Your current location (start point) is unknown.");
+            return;
+        }
+        
+        // --- SIMULATED ROUTING LOGIC ---
+        // Basic calculation of floor numbers for the alert message
+        const getFloorNumber = (roomName) => {
+            const match = roomName.match(/[E]?(\d+)/); // Extracts numbers, e.g., '101'
+            if (match) {
+                // If room is E101, floor is 1 (101 / 100 = 1.01 -> floor 1)
+                return Math.floor(parseInt(match[1]) / 100); 
+            }
+            return 'Unknown';
+        };
+
+        const startFloor = getFloorNumber(startRoom.name);
+        const endFloor = getFloorNumber(room.name);
+        const floorDifference = Math.abs(endFloor - startFloor);
+        
+        let routeMessage = `Routing from ${startRoom.name} (Floor ${startFloor}) to ${room.name} (Floor ${endFloor}):\n\n`;
+
+        if (floorDifference === 0) {
+             routeMessage += "You are on the same floor. Follow the path directly.";
+        } else {
+             routeMessage += `Route via Stairs: Travel ${floorDifference} floors using the nearest staircase.
+             Route via Lift: Travel ${floorDifference} floors using the nearest lift.`;
+        }
+        
+        alert(routeMessage);
+    };
+
+    const isCurrentRoom = startRoom?._id === room._id;
+    const canRoute = startRoom && !isCurrentRoom;
+    return (
+        <div className="room-modal-backdrop">
+            <div className="room-modal-content">
+                <button className="modal-close-btn" onClick={onClose}>&times;</button>
+                <h3>{room.name}</h3>
+                
+                {/* 💡 NEW: Go here button */}
+                {canRoute && (
+                    <button className="go-here-btn" onClick={handleGoHere}>
+                        Go here 🧭
+                    </button>
+                )}
+                
+                {/* ... existing photo, notes, qrCode display ... */}
+                
+                <p className="room-modal-notes">{room.notes || "No extra notes available."}</p>
+                <div className="room-modal-footer">
+                    <p>QR Code: {room.qrCode}</p>
+                </div>
+            </div>
+        </div>
+    );
+};
+
     if (loading) return <div className="loading">Loading Map...</div>;
     if (error) return <div className="error">{error}</div>;
     if (!map) return <div className="not-found">Map not available.</div>;
@@ -61,10 +125,13 @@ const MapView = () => {
             {map.floors.map((floor, fIndex) => (
                 <div key={fIndex} className="floor-display-block">
                     <h3>Floor {floor.floorNumber}</h3>
+
+                    {/* 💡 NEW WRAPPER: This container enables horizontal scrolling for all sections */}
+                    <div className="floor-sections-scroll-wrapper">
                     {floor.sections.map((section, sIndex) => (
-                        <div key={sIndex} className="section-display-block">
+                        <div key={sIndex} className="section-display-block-scrollable">
                             <h4>Section {section.sectionNumber}</h4>
-                            <div className="rooms-container">
+                            <div className="rooms-container-scrollable">
                                 {section.rooms.map((room, rIndex) => (
                                     <div
                                         key={rIndex}
@@ -77,11 +144,13 @@ const MapView = () => {
                             </div>
                         </div>
                     ))}
+                    </div>
                 </div>
             ))}
 
             {selectedRoom && (
-                <RoomView room={selectedRoom} onClose={() => setSelectedRoom(null)} />
+                <RoomView room={selectedRoom} onClose={() => setSelectedRoom(null)}
+                startRoom={startRoom} />
             )}
         </div>
     );

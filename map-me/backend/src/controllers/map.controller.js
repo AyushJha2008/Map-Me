@@ -151,7 +151,7 @@ export const updateRoom = async (req, res) => {
 
     // Handle photo upload
     if (photoFile) {
-      room.photo = `/uploads/${photoFile.filename}`;
+      room.photo = `/temp/${photoFile.filename}`;
     }
 
     // Regenerate QR code if requested
@@ -182,6 +182,39 @@ export const deleteMap = async (req, res) => {
     await Map.findByIdAndDelete(req.params.id);
     
     res.json({ success: true, message: "Map deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+
+// ====== Update Floor Features (MFPs) ======
+export const updateFloorFeatures = async (req, res) => {
+  try {
+    const { mapId, floorNumber } = req.params;
+    const { features } = req.body; // Expects an array of featurePointSchema objects
+
+    const map = await Map.findById(mapId);
+    if (!map) return res.status(404).json({ success: false, message: "Map not found" });
+
+    // Security check
+    if (map.createdBy.toString() !== req.user._id.toString()) {
+      return res.status(403).json({ success: false, message: "Unauthorized" });
+    }
+
+    const floor = map.floors.find(f => f.floorNumber === Number(floorNumber));
+    if (!floor) return res.status(404).json({ success: false, message: "Floor not found" });
+
+    // Replace existing features with the new array
+    floor.featurePoints = features || [];
+    
+    await map.save();
+
+    res.json({
+      success: true,
+      message: `Features updated successfully for Floor ${floorNumber}`,
+      data: floor.featurePoints,
+    });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }
