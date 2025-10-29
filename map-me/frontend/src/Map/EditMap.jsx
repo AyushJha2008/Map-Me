@@ -221,7 +221,52 @@ const EditMap = () => {
     );
  };
 
+  // frontend/src/Map/EditMap.jsx (RoomEditor component)
+
+const RoomEditor = ({ room, localChanges, onInputChange, onRegenerateQr }) => {
   
+  // ... existing state and props handlers ...
+
+  const classification = localChanges.classification !== undefined ? localChanges.classification : (room.classification || 'Normal');
+  const isQrRegenPending = localChanges.regenerateQr === true;
+  
+  const classificationOptions = ['Normal', 'Stairs', 'Lift', 'Entrance', 'Exit', 'Restroom'];
+
+  // ... existing file change and URL logic ...
+
+  return (
+    <div className="room-editor-form">
+      {/* ... existing form groups for Name and Notes ... */}
+      
+      {/* 💡 NEW: Classification Dropdown */}
+      <div className="form-group">
+        <label>Room Classification:</label>
+        <select
+          value={classification}
+          onChange={(e) => onInputChange('classification', e.target.value)} 
+        >
+          {classificationOptions.map(option => (
+            <option key={option} value={option}>{option}</option>
+          ))}
+        </select>
+      </div>
+      
+      {/* ... existing form groups for Photo and QR Code ... */}
+
+      <div className="form-group">
+        <label>QR Code:</label>
+        <div className="qr-code-display">
+            <p>{room.qrCode}</p>
+            {isQrRegenPending && <span className="pending-tag">(Regeneration Pending)</span>}
+        </div>
+      </div>
+
+      <div className="room-actions">
+        {/* ... existing regenerate button and message ... */}
+      </div>
+    </div>
+  );
+};
 
 
   if (loading) return <div className="loading">Loading map...</div>;
