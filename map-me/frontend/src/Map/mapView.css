@@ -22,12 +22,15 @@
     border: 1px solid #ddd;
     border-radius: 6px;
     background-color: #fff;
+    overflow: scroll;
+    scrollbar-width: none;
 }
 
 .floor-display-block h3 {
     color: #333;
     margin-bottom: 0.8rem;
     border-bottom: 1px dashed #ccc;
+    width: 100%;
     padding: 0 10px 0.5rem;
 }
 
@@ -44,7 +47,6 @@
 
 .section-display-block-scrollable {
     width: max-content;
-    min-width: 100%;
     margin-bottom: 1rem;
     padding: 0 10px;
 }
@@ -57,17 +59,11 @@
 .rooms-container-scrollable {
     display: flex;
     flex-wrap: nowrap;
-    overflow-x: auto;
     gap: 10px;
     margin-top: 10px;
     padding-bottom: 10px;
-    -ms-overflow-style: none;  /* IE and Edge */
-    scrollbar-width: none;  /* Firefox */
 }
 
-.rooms-container-scrollable::-webkit-scrollbar {
-    display: none;
-}
 
 .room-box-clickable {
     flex-shrink: 0;
@@ -82,11 +78,47 @@
     text-align: center;
 }
 
+.room-box-clickable.normal {
+    background-color: #5d9cec; /* Original blue */
+}
+
+/* Specific colors for classifications */
+.room-box-clickable.stairs {
+    background-color: #f39c12; /* Orange for stairs */
+}
+
+.room-box-clickable.lift {
+    background-color: #2ecc71; /* Green for lifts */
+}
+
+.room-box-clickable.entrance {
+    background-color: #3498db; /* Light blue for entrance */
+}
+
+.room-box-clickable.exit {
+    background-color: #e74c3c; /* Red for exit */
+}
+
+.room-box-clickable.restroom {
+    background-color: #9b59b6; /* Purple for restrooms */
+}
+
 .room-box-clickable:hover {
     background-color: #4a7fd6;
     transform: translateY(-1px);
 }
 
+
+.room-highlight {
+    /* Existing highlight style */
+    background-color: #ff0000 !important; /* Brighter red for highlight */
+    border: 3px solid #b70000;
+    transform: scale(1.05);
+}
+
+.room-highlight:hover {
+    background-color: #e60000 !important; /* Slightly darker red on hover */
+}
 /* Modal Styling */
 .room-modal-backdrop {
     position: fixed;

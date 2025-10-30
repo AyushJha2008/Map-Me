@@ -1,3 +1,4 @@
+// backend/src/controllers/map.controller.js (REPLACE ENTIRE FILE CONTENT)
 import { Map } from "../models/map.model.js";
 import { v4 as uuidv4 } from "uuid";
 
@@ -14,11 +15,12 @@ export const createMap = async (req, res) => {
       });
     }
 
-    // Assign QR codes to rooms
+    // Assign QR codes to rooms and set classification default
     floors.forEach((floor) => {
       floor.sections.forEach((section) => {
         section.rooms.forEach((room) => {
           room.qrCode = uuidv4();
+          room.classification = room.classification || 'Normal'; // Set default
         });
       });
     });
@@ -48,7 +50,6 @@ export const getMapByQrCode = async (req, res) => {
       return res.status(400).json({ success: false, message: "QR code is required" });
     }
 
-    // Use MongoDB aggregation to find the map containing the room with this QR code
     const map = await Map.aggregate([
       { $unwind: "$floors" },
       { $unwind: "$floors.sections" },
@@ -63,16 +64,11 @@ export const getMapByQrCode = async (req, res) => {
           matchedRoom: "$floors.sections.rooms",
         }
       },
-      // Group back by map ID to return the full map (optional, but cleaner for frontend)
-      // Since we only need the basic info, we can just return the first match.
     ]);
 
     if (map.length === 0) {
       return res.status(404).json({ success: false, message: "Room not found for this QR code" });
     }
-    
-    // For simplicity, we just return the full map object of the first match
-    // To get the full map back, we'd need a second lookup, but for now, we return the map ID and QR code to let the frontend handle the rest.
     
     // We get the map ID and the QR code which the frontend will use to fetch the map and highlight the room.
     const mapId = map[0]._id;
@@ -112,11 +108,11 @@ export const getMapById = async (req, res) => {
   }
 };
 
-// ====== Update Room Info ======
+// ====== Update Room Info (Now handles classification) ======
 export const updateRoom = async (req, res) => {
   try {
     const { mapId, floorNumber, sectionIndex, roomIndex } = req.params;
-    const { name, notes, regenerateQr } = req.body;
+    const { name, notes, regenerateQr, classification } = req.body; // 💡 Read new classification
     const photoFile = req.file;
 
     const map = await Map.findById(mapId);
@@ -128,13 +124,11 @@ export const updateRoom = async (req, res) => {
       return res.status(403).json({ success: false, message: "Unauthorized" });
     }
 
-    // Find floor by converting floorNumber to a number
     const floor = map.floors.find(f => f.floorNumber === Number(floorNumber));
     if (!floor) {
       return res.status(404).json({ success: false, message: "Floor not found" });
     }
 
-    // Find section and room using numeric indices
     const section = floor.sections[Number(sectionIndex)];
     if (!section) {
       return res.status(404).json({ success: false, message: "Section not found" });
@@ -145,9 +139,10 @@ export const updateRoom = async (req, res) => {
       return res.status(404).json({ success: false, message: "Room not found" });
     }
 
-    // Update room fields only if provided
+    // Update room fields only if provided/changed
     if (name !== undefined) room.name = name;
     if (notes !== undefined) room.notes = notes;
+    if (classification !== undefined) room.classification = classification; // 💡 SAVE CLASSIFICATION
 
     // Handle photo upload
     if (photoFile) {
@@ -186,36 +181,4 @@ export const deleteMap = async (req, res) => {
     res.status(500).json({ success: false, message: error.message });
   }
 };
-
-
-// ====== Update Floor Features (MFPs) ======
-export const updateFloorFeatures = async (req, res) => {
-  try {
-    const { mapId, floorNumber } = req.params;
-    const { features } = req.body; // Expects an array of featurePointSchema objects
-
-    const map = await Map.findById(mapId);
-    if (!map) return res.status(404).json({ success: false, message: "Map not found" });
-
-    // Security check
-    if (map.createdBy.toString() !== req.user._id.toString()) {
-      return res.status(403).json({ success: false, message: "Unauthorized" });
-    }
-
-    const floor = map.floors.find(f => f.floorNumber === Number(floorNumber));
-    if (!floor) return res.status(404).json({ success: false, message: "Floor not found" });
-
-    // Replace existing features with the new array
-    floor.featurePoints = features || [];
-    
-    await map.save();
-
-    res.json({
-      success: true,
-      message: `Features updated successfully for Floor ${floorNumber}`,
-      data: floor.featurePoints,
-    });
-  } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
-  }
-};
+// updateFloorFeatures is removed from the file.

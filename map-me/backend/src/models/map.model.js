@@ -1,3 +1,4 @@
+// backend/src/models/map.model.js (REPLACE ENTIRE FILE CONTENT)
 import mongoose, { Schema } from "mongoose";
 
 // ====== Room Schema ======
@@ -7,6 +8,7 @@ const roomSchema = new Schema(
     photo: { type: String },
     notes: { type: String },
     qrCode: { type: String },
+    // 💡 NEW FIELD: Classifies room purpose
     classification: {
         type: String,
         enum: ['Normal', 'Stairs', 'Lift', 'Entrance', 'Exit', 'Restroom'],
@@ -22,11 +24,11 @@ const sectionSchema = new Schema({
   rooms: [roomSchema],
 });
 
-
 // ====== Floor Schema ======
 const floorSchema = new Schema({
-    floorNumber: { type: Number, required: true },
-    sections: [sectionSchema], 
+  floorNumber: { type: Number, required: true },
+  sections: [sectionSchema], 
+  // FeaturePoints is now deprecated.
 });
 
 // ====== Map Schema ======

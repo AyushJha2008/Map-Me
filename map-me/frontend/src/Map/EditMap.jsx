@@ -75,14 +75,15 @@ const EditMap = () => {
           const changes = localMapChanges[key];
           
           // Only send API call if changes exist for this room OR if the button explicitly handles everything
-          if (changes || changes?.photo || changes?.regenerateQr) {
+          if (changes) {
             
             const formData = new FormData();
             
             // Text inputs
             formData.append('name', changes?.name !== undefined ? changes.name : room.name);
             formData.append('notes', changes?.notes !== undefined ? changes.notes : room.notes);
-            
+            formData.append('classification', changes?.classification !== undefined ? changes.classification : room.classification);
+
             // Photo File (handle individually to preserve file object)
             if (changes?.photo instanceof File) {
               formData.append('photo', changes.photo);
@@ -145,128 +146,9 @@ const EditMap = () => {
   };
 
   const regenerateQrCode = (fIndex, sIndex, rIndex) => {
-     // Mark for regeneration on save
      handleInputChange(fIndex, sIndex, rIndex, 'regenerateQr', true);
      alert(`QR code for Room ${rIndex + 1} marked for regeneration upon saving.`);
   };
-
-  const FloorFeaturesEditor = ({ mapId, floorNumber, initialFeatures }) => {
-    const [features, setFeatures] = useState(initialFeatures || []);
-    const [loading, setLoading] = useState(false);
-    
-    const featureOptions = ['Stairs', 'Lift', 'Entrance', 'Exit', 'Restroom'];
-
-    const addFeature = () => {
-        setFeatures(prev => [
-            ...prev,
-            { type: 'Stairs', label: `New ${prev.length + 1}` } // Add new feature
-        ]);
-    };
-
-    const handleFeatureChange = (index, field, value) => {
-        setFeatures(prev => {
-            const newFeatures = [...prev];
-            newFeatures[index][field] = value;
-            return newFeatures;
-        });
-    };
-
-    const removeFeature = (index) => {
-        setFeatures(prev => prev.filter((_, i) => i !== index));
-    };
-
-    const handleSaveFeatures = async () => {
-        setLoading(true);
-        const token = localStorage.getItem("accessToken");
-        try {
-            await axios.put(
-                `http://localhost:8000/api/v1/maps/${mapId}/floors/${floorNumber}/features`,
-                { features },
-                { headers: { Authorization: `Bearer ${token}` }, withCredentials: true }
-            );
-            alert(`Floor ${floorNumber} features saved!`);
-        } catch (error) {
-            alert("Failed to save features.");
-            console.error("Feature save error:", error);
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    return (
-        <div className="floor-features-editor">
-            <h4>Map Features (Stairs, Lifts, Gates)</h4>
-            {features.map((feature, index) => (
-                <div key={index} className="feature-input-group">
-                    <select
-                        value={feature.type}
-                        onChange={(e) => handleFeatureChange(index, 'type', e.target.value)}
-                    >
-                        {featureOptions.map(opt => <option key={opt} value={opt}>{opt}</option>)}
-                    </select>
-                    <input
-                        type="text"
-                        placeholder="Label (e.g., Main Lift)"
-                        value={feature.label}
-                        onChange={(e) => handleFeatureChange(index, 'label', e.target.value)}
-                    />
-                    <button onClick={() => removeFeature(index)} className="remove-btn" type="button">Remove</button>
-                </div>
-            ))}
-            <button onClick={addFeature} className="add-btn" type="button">+ Add Feature Point</button>
-            <button onClick={handleSaveFeatures} className="save-features-btn" type="button" disabled={loading}>
-                {loading ? 'Saving...' : 'Save Features'}
-            </button>
-        </div>
-    );
- };
-
-  // frontend/src/Map/EditMap.jsx (RoomEditor component)
-
-const RoomEditor = ({ room, localChanges, onInputChange, onRegenerateQr }) => {
-  
-  // ... existing state and props handlers ...
-
-  const classification = localChanges.classification !== undefined ? localChanges.classification : (room.classification || 'Normal');
-  const isQrRegenPending = localChanges.regenerateQr === true;
-  
-  const classificationOptions = ['Normal', 'Stairs', 'Lift', 'Entrance', 'Exit', 'Restroom'];
-
-  // ... existing file change and URL logic ...
-
-  return (
-    <div className="room-editor-form">
-      {/* ... existing form groups for Name and Notes ... */}
-      
-      {/* 💡 NEW: Classification Dropdown */}
-      <div className="form-group">
-        <label>Room Classification:</label>
-        <select
-          value={classification}
-          onChange={(e) => onInputChange('classification', e.target.value)} 
-        >
-          {classificationOptions.map(option => (
-            <option key={option} value={option}>{option}</option>
-          ))}
-        </select>
-      </div>
-      
-      {/* ... existing form groups for Photo and QR Code ... */}
-
-      <div className="form-group">
-        <label>QR Code:</label>
-        <div className="qr-code-display">
-            <p>{room.qrCode}</p>
-            {isQrRegenPending && <span className="pending-tag">(Regeneration Pending)</span>}
-        </div>
-      </div>
-
-      <div className="room-actions">
-        {/* ... existing regenerate button and message ... */}
-      </div>
-    </div>
-  );
-};
 
 
   if (loading) return <div className="loading">Loading map...</div>;
@@ -277,7 +159,6 @@ const RoomEditor = ({ room, localChanges, onInputChange, onRegenerateQr }) => {
     <div className="edit-map-container">
       <h2>Edit Map: {map.title}</h2>
       
-      {/* 💡 Main Save Button */}
       <div className="main-save-button-container">
         <button 
             onClick={handleSaveAllChanges} 
@@ -288,12 +169,6 @@ const RoomEditor = ({ room, localChanges, onInputChange, onRegenerateQr }) => {
       {map.floors.map((floor, fIndex) => (
         <div key={fIndex} className="floor-block">
           <h3>Floor {floor.floorNumber}</h3>
-
-          <FloorFeaturesEditor 
-              mapId={map._id}
-              floorNumber={floor.floorNumber}
-              initialFeatures={floor.featurePoints}
-          />
           
           {floor.sections.map((section, sIndex) => (
             <div key={sIndex} className="section-block">
@@ -318,7 +193,7 @@ const RoomEditor = ({ room, localChanges, onInputChange, onRegenerateQr }) => {
         </div>
       ))}
       
-      {/* 💡 Final Save Button after map content */}
+      {/*  Final Save Button after map content */}
       <div className="main-save-button-container">
         <button 
             onClick={handleSaveAllChanges} 
@@ -331,16 +206,16 @@ const RoomEditor = ({ room, localChanges, onInputChange, onRegenerateQr }) => {
   );
 };
 
-// --- RoomEditor is now a fully controlled component ---
+
 const RoomEditor = ({ room, localChanges, onInputChange, onRegenerateQr }) => {
-  // Use map's original value OR local pending changes for display
   const name = localChanges.name !== undefined ? localChanges.name : room.name;
   const notes = localChanges.notes !== undefined ? localChanges.notes : room.notes;
   const isQrRegenPending = localChanges.regenerateQr === true;
+  const classification = localChanges.classification !== undefined ? localChanges.classification : (room.classification || 'Normal');
 
-  // Since it is controlled, handleSubmit is no longer needed
-  // File input needs special handling because it deals with the File object
-  const handleFileChange = (e) => {
+  const classificationOptions = ['Normal', 'Stairs', 'Lift', 'Entrance', 'Exit', 'Restroom'];
+
+ const handleFileChange = (e) => {
     const file = e.target.files[0];
     onInputChange('photo', file);
   };
@@ -368,6 +243,19 @@ const RoomEditor = ({ room, localChanges, onInputChange, onRegenerateQr }) => {
           value={notes} 
           onChange={(e) => onInputChange('notes', e.target.value)} 
         />
+      </div>
+
+      {/* clssification dropdown */}
+      <div className="form-group">
+        <label>Room Classification:</label>
+        <select
+          value={classification}
+          onChange={(e) => onInputChange('classification', e.target.value)} 
+        >
+          {classificationOptions.map(option => (
+            <option key={option} value={option}>{option}</option>
+          ))}
+        </select>
       </div>
       
       <div className="form-group">

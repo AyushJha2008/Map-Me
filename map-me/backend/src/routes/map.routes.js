@@ -1,3 +1,4 @@
+// backend/src/routes/map.routes.js (REPLACE ENTIRE FILE CONTENT)
 import { Router } from "express";
 import {
   createMap,
@@ -6,7 +7,7 @@ import {
   updateRoom,
   deleteMap,
   getMapByQrCode,
-  updateFloorFeatures
+  // updateFloorFeatures is REMOVED
 } from "../controllers/map.controller.js";
 import { verifyJwt } from "../middlewares/auth.middleware.js";
 import { upload } from "../middlewares/multer.middleware.js";
@@ -29,21 +30,15 @@ router.get("/visitor/:id", getMapById);
 // Search map by QR code (PUBLIC - for Visitors)
 router.get("/qr-search/:qrCode", getMapByQrCode);
 
-router.put(
-  "/:mapId/floors/:floorNumber/features",
-  verifyJwt,
-  updateFloorFeatures // This function will be defined in the controller
-);
+// The obsolete /features route is REMOVED.
 
 // Update room info (name, photo, notes, and QR code)
-// The route path is corrected to include a 'sectionIndex'
 router.put(
   "/:mapId/floors/:floorNumber/sections/:sectionIndex/rooms/:roomIndex",
   verifyJwt,
   upload.single("photo"),
   updateRoom
 );
-
 
 // Delete map
 router.delete("/:id", verifyJwt, deleteMap);

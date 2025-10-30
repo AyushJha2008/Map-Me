@@ -4,15 +4,18 @@
     box-sizing: border-box;
 }
 .landingPage{
-  margin: 2rem 3rem;
-  background-color: rgb(251, 251, 245);
-  padding: 1rem 2rem;
-  box-shadow:  0px 0px 8px 0px;
+    background-color: #ffffff; /* Clean white background */
+    padding: 1rem 3rem; /* Increased padding */
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); /* Soft, noticeable shadow */
+    border-radius: 12px; /* Rounded corners */
 }
 .landingNavbar{
-  display: flex;
-  justify-content: space-between;
-  padding: 1rem 0rem;
+    border-bottom: 1px solid #e0e0e0; /* Subtle separator line */
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .head-left{
@@ -25,10 +28,22 @@
 }
 .head-left span{
   font-size: x-large;
+  font-weight: 600; /* Bolder logo text */
+  color: #2e66f2;
 }
 .head-right{
   display: flex;
   gap: 2rem;
+}
+
+.head-right a {
+    color: #555;
+    text-decoration: none;
+    font-size: large;
+    transition: color 0.2s;
+}
+.head-right a:hover {
+    color: #2e66f2; /* Highlight links on hover */
 }
 
 .landingMain{
@@ -40,27 +55,44 @@
 .main-left h1{
   font-size: 3.5rem;
   margin-bottom: 1rem;
+  color: #1f2937;
 }
 .main-left p{
   margin-bottom: 1.5rem;
   font-size: larger;
+  color: #6b7280;
 }
 .main-left button{
+  cursor: pointer;
   height: 3rem;
   padding: 5px 20px;
   margin-right: 2rem ;
   font-size: larger;
+  border-radius: 8px; /* Consistent rounded button corners */
+  transition: all 0.2s ease-in-out;
 }
 .main-right img{
   height: 27rem;
 }
 #visitorLogin{
-  background-color: rgb(94, 138, 234);
-  color: white;
   font-weight: bold;
+  background-color: #5e8aea;
+  color: white;
+  border: none;
+  box-shadow: 0 4px 10px rgba(94, 138, 234, 0.5);
 }
+#visitorLogin:hover {
+    background-color: #4a7fd6;
+    transform: translateY(-1px);
+}
+
 #organizerLogin{
-  color: rgb(68, 122, 238);
   background-color: white;
   font-weight: bold;
+  border: 2px solid #447aee;
+  color: #447aee;
+}
+#organizerLogin:hover {
+    background-color: #f0f4ff; /* Light blue background on hover */
+    transform: translateY(-1px);
 }

@@ -32,7 +32,6 @@ const MapView = () => {
                     setError(response.data.message);
                 }
             } catch (err) {
-                // Catches 404s, 500s, and network errors
                 setError("Map not found or connection error.");
                 console.error("Visitor fetch map error:", err);
             } finally {
@@ -46,6 +45,9 @@ const MapView = () => {
     if (error) return <div className="error">{error}</div>;
     if (!map) return <div className="not-found">Map not available.</div>;
 
+    const startRoom = map.floors?.flatMap(f => f.sections?.flatMap(s => s.rooms))
+        .find(r => r.qrCode === highlightQrCode) || null;
+
     // Use optional chaining (map?.floors, section?.rooms) to prevent crashes
     return (
         <div className="visitor-map-container">
@@ -55,9 +57,7 @@ const MapView = () => {
             {highlightQrCode && (
                 <div className="current-location-banner">
                     Current Location: **{
-                        // Use optional chaining for nested array access
-                        map.floors?.flatMap(f => f.sections?.flatMap(s => s.rooms))
-                            .find(r => r.qrCode === highlightQrCode)?.name || 'Unknown Room'
+                        startRoom?.name || 'Unknown Room'
                     }**
                 </div>
             )}
@@ -65,6 +65,8 @@ const MapView = () => {
             {map.floors?.map((floor, fIndex) => (
                 <div key={fIndex} className="floor-display-block">
                     <h3>Floor {floor.floorNumber}</h3>
+
+                    <div className='floor-section-scroll-wrapper'>
                     {floor.sections?.map((section, sIndex) => (
                         <div key={sIndex} className="section-display-block-scrollable">
                             <h4>Section {section.sectionNumber}</h4>
@@ -72,7 +74,9 @@ const MapView = () => {
                                 {section.rooms?.map((room, rIndex) => (
                                     <div
                                         key={rIndex}
-                                        className={`room-box-clickable ${room.qrCode === highlightQrCode ? 'room-highlight' : ''}`}
+                                        className={`room-box-clickable 
+                                            ${room.qrCode === highlightQrCode ? 'room-highlight' : ''}
+                                            ${room.classification ? room.classification.toLowerCase() : 'normal'}`}
                                         onClick={() => setSelectedRoom(room)}
                                     >
                                         {room.name}
@@ -81,6 +85,7 @@ const MapView = () => {
                             </div>
                         </div>
                     ))}
+                </div>
                 </div>
             ))}
 
@@ -120,29 +125,30 @@ const RoomView = ({ room, onClose, startRoom, map }) => {
         
         let routeMessage = `Routing from ${startRoom.name} (Floor ${startFloor}) to ${room.name} (Floor ${endFloor}):\n\n`;
 
+        // Simplified POI Check: Check if *any* room is classified as Stairs or Lift on *any* floor.
+        const hasStairs = map.floors?.some(f => f.sections?.some(s => s.rooms?.some(r => r.classification === 'Stairs')));
+        const hasLift = map.floors?.some(f => f.sections?.some(s => s.rooms?.some(r => r.classification === 'Lift')));
+
         if (floorDifference === 0) {
              routeMessage += "You are on the same floor. Follow the path directly.";
         } else {
-             // 💡 NEW LOGIC: Use classified points for routing options
-             const hasStairs = map.floors.some(f => f.sections.some(s => s.rooms.some(r => r.classification === 'Stairs')));
-             const hasLift = map.floors.some(f => f.sections.some(s => s.rooms.some(r => r.classification === 'Lift')));
-
              if (hasStairs) {
-                 routeMessage += `\nRoute via Stairs: Travel ${floorDifference} floors using the nearest Stairwell room.`;
+                 routeMessage += `\nRoute via Stairs: Find the nearest 'Stairs' room on Floor ${startFloor} to change floors.`;
              }
              if (hasLift) {
-                 routeMessage += `\nRoute via Lift: Travel ${floorDifference} floors using the nearest Lift room.`;
+                 routeMessage += `\nRoute via Lift: Find the nearest 'Lift' room on Floor ${startFloor} to change floors.`;
              }
              if (!hasStairs && !hasLift) {
-                 routeMessage += "\nRouting requires Stairs or Lift points to be defined on the map.";
+                 routeMessage += "\nRouting requires Stair or Lift rooms to be defined on the map.";
              }
             }
         
         alert(routeMessage);
     };
 
-    const isCurrentRoom = startRoom?._id === room._id;
+    const isCurrentRoom = startRoom?.qrCode === room.qrCode;
     const canRoute = startRoom && !isCurrentRoom;
+    const classification = room.classification || 'Normal';
 
     return (
         <div className="room-modal-backdrop">
@@ -163,7 +169,9 @@ const RoomView = ({ room, onClose, startRoom, map }) => {
                         className="room-modal-photo"
                     />
                 )}
-                <p className="room-modal-notes">{room.notes || "No extra notes available."}</p>
+                <p className="room-modal-notes">
+                    **Classification:** {classification} <br />
+                    {room.notes || "No extra notes available."}</p>
                 <div className="room-modal-footer">
                     <p>QR Code: {room.qrCode}</p>
                 </div>
