@@ -1,5 +1,7 @@
 /* frontend/src/Map/MapView.css */
-
+:root{
+    --max-section-width: 2500px;
+}
 .visitor-map-container {
     max-width: 800px;
     margin: 3rem auto;
@@ -22,7 +24,7 @@
     border: 1px solid #ddd;
     border-radius: 6px;
     background-color: #fff;
-    overflow: scroll;
+    overflow: scroll; /*scrolllllll*/
     scrollbar-width: none;
 }
 
@@ -46,9 +48,11 @@
 }
 
 .section-display-block-scrollable {
-    width: max-content;
+    width: var(--max-section-width);
     margin-bottom: 1rem;
     padding: 0 10px;
+    display: flex;
+    flex-direction: column;
 }
 
 .section-display-block-scrollable h4 {
@@ -59,14 +63,17 @@
 .rooms-container-scrollable {
     display: flex;
     flex-wrap: nowrap;
+    justify-content: space-between;
     gap: 10px;
     margin-top: 10px;
     padding-bottom: 10px;
+    width: 100%;
 }
 
 
 .room-box-clickable {
     flex-shrink: 0;
+    flex-grow: 1;
     min-width: 140px;
     padding: 10px 15px;
     background-color: #5d9cec; /* Accent color */
